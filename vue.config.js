@@ -20,6 +20,14 @@ module.exports = defineConfig({
                     },
                 ],
                 includeSubNodeModules: true,
+                linux: {
+                    // icon: "build/icons", // 包含各种尺寸图标的文件夹
+                    target: [
+                        "AppImage",
+                        "deb"
+                    ],
+                    // category: "Utility",
+                }
             }
         }
     }
