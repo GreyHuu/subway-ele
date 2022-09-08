@@ -108,8 +108,8 @@ moment.locale('zh-cn');
 
 const API = window.electronAPI
 // import {toRaw} from 'vue'
-// const targetProcess = ["persondtc","truckdtc","retrodtc", "falldtc"]
-const targetProcess = ["/snap/postman/183/usr/share/postman/postman", "msedge.exe", "retrodtc", "falldtc"];
+const targetProcess = ["persondtc","truckdtc","retrodtc", "falldtc"]
+// const targetProcess = ["/snap/postman/183/usr/share/postman/postman", "msedge.exe", "retrodtc", "falldtc"];
 
 const targetProcessDetail = [
   {
