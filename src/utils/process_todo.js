@@ -7,8 +7,12 @@
 const childProcess = require("child_process")
 const moment = require("moment")
 const {getItem} = require("@/utils/localStorage")
+// const handleProcess = require("@/utils/handleProcess")
 const execSync = childProcess.execSync
-
+const {Worker} = require('worker_threads')
+// const currentPath = require('os').homedir()
+// const {join} = require('path')
+const {app} = require('electron')
 /**
  * 同步的获取全部进程的进程名 进程id
  * @param name
@@ -75,31 +79,58 @@ function changeTime(linux_date) {
  * @param type
  * @returns {*[]}
  */
-const handleStartShell = (names, type) => {
-    let flag = []   // 标记每个脚本是否执行成功
-    let shellName = type === "start" ? "start.sh" : "kill.sh"
-    names.forEach(item => {
-        let path = getPathByName(item)
-        let cmd = process.platform === 'win32' ? `git ${path + '\\' + shellName}` : `sh ${path + '/' + shellName}`
-        console.log("cmd", cmd);
-        let stdout;
+const handleStartShell = async (names, type) => {
+    return await new Promise((resolve, reject) => {
+        let flag = []   // 标记每个脚本是否执行成功
+        let shellName = type === "start" ? "start.sh" : "kill.sh"
+        let stdout = null;
+        const threads = new Set()
+        let try_count = 0
         try {
-            stdout = execSync(cmd).toString()
-            flag.push(1)
-            console.log(stdout);
+            for (let item of names) {
+                let path = getPathByName(item)
+                let cmd = process.platform === 'win32' ? `git ${path + '\\' + shellName}` : `sh ${path + '/' + shellName}`
+                // app.getAppPath() + "/src/utils/handleProcess.js"
+                // "/home/greyhuhu/web/subway/subway/src/utils/handleProcess.js"
+                threads.add(new Worker(app.getAppPath() + "/src/utils/handleProcess.js", {
+                    workerData: {shell: cmd}
+                }))
+            }
+            for (let worker of threads) {
+                worker.on('error', (err) => {
+                    console.log("err", err);
+                    flag.push(0)
+                    resolve(flag)
+                    // throw err
+                })
+                worker.on('exit', () => {
+                    threads.delete(worker)
+                })
+                worker.on('message', (msg) => {
+                    // console.log('msg', msg);
+                    stdout = msg.res
+                    flag.push(1)
+                })
+            }
         } catch (e) {
             flag.push(0)
-            console.log("error", e);
+            console.log("error2", e);
+            reject(flag)
+            // return flag
         }
-        console.log(flag);
+        setInterval(() => {
+            if (threads.size === 0 || try_count === 6) {
+                resolve(flag)
+            }
+            try_count++
+        }, 1000)
     })
-    return flag
 }
+
 
 const getPathByName = (name) => {
     return getItem(name)
 }
-
 
 module.exports = {
     viewProcessesList: handleGetProcessList,
