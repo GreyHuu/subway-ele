@@ -109,7 +109,7 @@ moment.locale('zh-cn');
 const API = window.electronAPI
 // import {toRaw} from 'vue'
 const targetProcess = ["persondtc", "truckdtc", "retrodtc", "falldtc"]
-// const targetProcess = ["/snap/postman/183/usr/share/postman/postman", "msedge.exe", "retrodtc", "falldtc"];
+// const targetProcess = ["/snap/postman/184/usr/share/postman/postman", "msedge.exe", "retrodtc", "falldtc"];
 
 const targetProcessDetail = [
   {
@@ -269,7 +269,11 @@ export default {
         rows.forEach(item => {
           names.push(item.processName)
         })
-        let resData = await API.processStart(names)
+        let resData = null
+        if (type === "start")
+          resData = await API.processStart(names)
+        else
+          resData = await API.processStop(names)
         console.log("resData", resData);
         resData ? "" : resData = [0]
         let flag = true
