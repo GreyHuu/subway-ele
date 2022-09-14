@@ -232,6 +232,8 @@ export default {
       return [d, h, m, s]
     },
     async handleOk() {
+      const data = await API.getProcessList()
+      this.handleProcessData(data)
       this.intervalList.forEach((item) => {
         clearInterval(item);
       })
@@ -240,8 +242,6 @@ export default {
       this.loadVisible = false
       this.processData = null
       this.selectedRow = []
-      const data = await API.getProcessList()
-      this.handleProcessData(data)
     },
     /**
      * 运行某个shell脚本

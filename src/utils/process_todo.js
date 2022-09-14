@@ -93,7 +93,7 @@ const handleStartShell = async (names, type) => {
                 // app.getAppPath() + "/src/utils/handleProcess.js"
                 // "/home/greyhuhu/web/subway/subway/src/utils/handleProcess.js"
                 console.log('cmd', cmd);
-                threads.add(new Worker("/home/greyhuhu/web/subway/subway/src/utils/handleProcess.js", {
+                threads.add(new Worker(app.getAppPath() + "/src/utils/handleProcess.js", {
                     workerData: {shell: cmd}
                 }))
             }
