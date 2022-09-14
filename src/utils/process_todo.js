@@ -101,8 +101,8 @@ const handleStartShell = async (names, type) => {
                 worker.on('error', (err) => {
                     console.log("err", err);
                     flag.push(0)
+                    // flag.push(err)
                     resolve(flag)
-                    // throw err
                 })
                 worker.on('exit', () => {
                     threads.delete(worker)
@@ -111,6 +111,7 @@ const handleStartShell = async (names, type) => {
                     // console.log('msg', msg);
                     stdout = msg.res
                     flag.push(1)
+                    // flag.push(stdout)
                 })
             }
         } catch (e) {
@@ -120,7 +121,7 @@ const handleStartShell = async (names, type) => {
             // return flag
         }
         setInterval(() => {
-            if (threads.size === 0 || try_count === 6) {
+            if (threads.size === 0 || try_count === 5) {
                 resolve(flag)
             }
             try_count++

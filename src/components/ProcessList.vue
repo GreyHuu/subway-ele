@@ -173,7 +173,7 @@ export default {
     this.handleProcessData(data)
     this.rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(selectedRows, selectedRowKeys);
+        // console.log(selectedRows, selectedRowKeys);
         this.selectedRow = selectedRows
       },
     };
@@ -195,7 +195,8 @@ export default {
         }
       })
       this.processData = targetProcessDetail
-      console.log(this.processData);
+
+      // console.log(this.processData);
     },
     // 打开详细的窗口
     async handleOpenProcessDetail(id, index) {
@@ -232,16 +233,17 @@ export default {
       return [d, h, m, s]
     },
     async handleOk() {
+      this.processData = null
       const data = await API.getProcessList()
       this.handleProcessData(data)
       this.intervalList.forEach((item) => {
         clearInterval(item);
       })
       this.intervalList = [];
-      this.visible = false
-      this.loadVisible = false
-      this.processData = null
+
       this.selectedRow = []
+      this.loadVisible = false
+      this.visible = false
     },
     /**
      * 运行某个shell脚本
